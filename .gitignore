@@ -3,7 +3,7 @@
 
 # sbt specific
 .metadata/
-.cache/
+.cache
 .history/
 .lib/
 dist/*

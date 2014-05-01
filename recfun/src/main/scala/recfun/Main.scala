@@ -28,16 +28,19 @@ object Main {
    * Exercise 2
    */
   def balance(chars: List[Char]): Boolean = {
-    def loop(acc: Int, chars: List[Char]): Boolean = {
-      if(chars.isEmpty)
-        // There are no parentheses left to balance
-        if(acc == 0) return true
-        else return false
-      // There are no opening parentheses
-      if(acc == 0 && chars.head == ')') return false
-      if(chars.head == '(') loop(acc + 1, chars.tail)
-      else if(chars.head == ')') loop(acc - 1, chars.tail)
-      else loop(acc, chars.tail)
+    def loop(openingParentheses: Int, chars: List[Char]): Boolean = {
+      def isOpeningParentheses =
+        chars.head == '('
+      def isClosingParentheses =
+        chars.head == ')'
+      // There are no opening parentheses left to balance => balanced
+      if(chars.isEmpty && openingParentheses == 0) true
+      // Opening parentheses remain unbalanced or
+      // there are no opening parentheses for a closing one => unbalanced
+      else if(chars.isEmpty || openingParentheses == 0 && isClosingParentheses) false
+      else if(isOpeningParentheses) loop(openingParentheses + 1, chars.tail)
+      else if(isClosingParentheses) loop(openingParentheses - 1, chars.tail)
+      else loop(openingParentheses, chars.tail)
     }
     loop(0, chars)
   }
@@ -45,5 +48,9 @@ object Main {
   /**
    * Exercise 3
    */
-  def countChange(money: Int, coins: List[Int]): Int = ???
+  def countChange(money: Int, coins: List[Int]): Int =
+      if(money == 0) 1
+      else if(money < 0 || coins.isEmpty) 0
+      else countChange(money - coins.head, coins) +
+      	countChange(money, coins.tail)
 }
