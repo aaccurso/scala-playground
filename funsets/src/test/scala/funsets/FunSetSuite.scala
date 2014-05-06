@@ -86,7 +86,7 @@ class FunSetSuite extends FunSuite {
    * Once you finish your implementation of "singletonSet", exchange the
    * function "ignore" by "test".
    */
-  ignore("singletonSet(1) contains 1") {
+  test("singletonSet(1) contains 1") {
     
     /**
      * We create a new instance of the "TestSets" trait, this gives us access
@@ -101,12 +101,54 @@ class FunSetSuite extends FunSuite {
     }
   }
 
-  ignore("union contains all elements") {
+  test("union contains all elements") {
     new TestSets {
       val s = union(s1, s2)
       assert(contains(s, 1), "Union 1")
       assert(contains(s, 2), "Union 2")
       assert(!contains(s, 3), "Union 3")
     }
+  }
+  
+  test("filter a set") {
+    new TestSets {
+      val s = union(union(s1, s2), s3)
+      val f = filter(s, x => x > 1)
+      assert(!contains(f,1))
+      assert(contains(f,2))
+      assert(contains(f,3))
+    }
+  }
+  
+  test("forall set") {
+    new TestSets {
+      val s = union(union(s1, s2), s3)
+      assert(forall(s, x => x > 0))
+      assert(!forall(s, x => x < 2))
+    }
+  }
+  
+  test("exists set") {
+    new TestSets {
+      val s = union(union(s1, s2), s3)
+      assert(exists(s, x => x > 2))
+      assert(!exists(s, x => x < 0))
+    }
+  }
+  
+  test("map set") {
+    new TestSets {
+      val s = union(union(s1, s2), s3)
+      val m = map(s, x => x + 1)
+      assert(contains(m, 4))
+      assert(!contains(m, 1))
+    }
+  }
+  
+  test("map larger set") {
+    val s = union(union(singletonSet(2), singletonSet(4)), singletonSet(1000))
+    val m = map(s, x => x - 1)
+    assert(contains(m, 999))
+    assert(!exists(m, x => x < 1))
   }
 }
