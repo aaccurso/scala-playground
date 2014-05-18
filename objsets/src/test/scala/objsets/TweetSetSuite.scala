@@ -44,9 +44,15 @@ class TweetSetSuite extends FunSuite {
     }
   }
 
-  test("union: set4c and set4d") {
+  test("union: set4c and set4d (1)") {
     new TestSets {
       assert(size(set4c.union(set4d)) === 4)
+    }
+  }
+  
+  test("union: set4c and set4d (2)") {
+    new TestSets {
+      assert(size(set4d.union(set4c)) === 4)
     }
   }
 
@@ -59,6 +65,20 @@ class TweetSetSuite extends FunSuite {
   test("union: with empty set (2)") {
     new TestSets {
       assert(size(set1.union(set5)) === 4)
+    }
+  }
+  
+  test("most retweeted on Empty") {
+    new TestSets {
+      intercept[NoSuchElementException] {
+        set1.mostRetweeted
+      }
+    }
+  }
+  
+  test("most retweeted on nonEmpty") {
+    new TestSets {
+      assert(set5.mostRetweeted.retweets === 20)
     }
   }
 
