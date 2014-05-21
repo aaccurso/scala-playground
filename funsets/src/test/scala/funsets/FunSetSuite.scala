@@ -151,4 +151,12 @@ class FunSetSuite extends FunSuite {
     assert(contains(m, 999))
     assert(!exists(m, x => x < 1))
   }
+  
+  test("map duplicate & forall even") {
+    new TestSets {
+      val s = union(union(s1, s2), s3)
+      val m = map(s, x => x * 2)
+      assert(forall(m, x => x % 2 == 0))
+    }
+  }
 }
