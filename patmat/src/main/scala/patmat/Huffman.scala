@@ -26,9 +26,15 @@ object Huffman {
 
   // Part 1: Basics
 
-  def weight(tree: CodeTree): Int = ??? // tree match ...
+  def weight(tree: CodeTree): Int = tree match {
+    case Leaf(_, weight) => weight
+    case Fork(_,_,_,weight) => weight
+  }
 
-  def chars(tree: CodeTree): List[Char] = ??? // tree match ...
+  def chars(tree: CodeTree): List[Char] = tree match {
+    case Leaf(char, _) => List(char)
+    case Fork(_,_,chars,_) => chars
+  }
 
   def makeCodeTree(left: CodeTree, right: CodeTree) =
     Fork(left, right, chars(left) ::: chars(right), weight(left) + weight(right))
@@ -71,7 +77,24 @@ object Huffman {
    *       println("integer is  : "+ theInt)
    *   }
    */
-  def times(chars: List[Char]): List[(Char, Int)] = ???
+  def times(chars: List[Char]): List[(Char, Int)] = {
+    def loop(xs: List[Char], list_pair: List[(Char, Int)]): List[(Char, Int)] = {
+      def increment_pair(char_to_match: Char): List[(Char, Int)] = {
+        val some = list_pair.find((pair) => pair match {
+	  		case (aChar, _) => aChar == char_to_match
+        })
+        if(some.isDefined) {
+          val pair = some.head
+          val index = list_pair.indexOf(pair)
+          loop(xs.tail, (pair._1, pair._2 + 1) :: list_pair.take(index) ::: list_pair.drop(index + 1))
+        } // There is no tuple that contains char_to_match
+        else loop(xs.tail, (char_to_match, 1) :: list_pair)            
+      }
+      if(xs.isEmpty) return list_pair
+      else increment_pair(xs.head)
+    }
+    loop(chars, List())
+  }
 
   /**
    * Returns a list of `Leaf` nodes for a given frequency table `freqs`.
