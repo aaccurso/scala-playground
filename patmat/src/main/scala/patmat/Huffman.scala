@@ -105,6 +105,7 @@ object Huffman {
     def loop(list: List[(Char, Int)], acc: List[Leaf]): List[Leaf] = list match {
 	    case List() => acc
 	    case (aChar, aFreq) :: xs => {
+	      // span partitions the list according to a predicate
 	      val (greater, lower) = acc.span(leaf => leaf.weight > aFreq)
 	      loop(xs, lower ::: Leaf(aChar, aFreq) :: greater)
 	    }
@@ -115,7 +116,10 @@ object Huffman {
   /**
    * Checks whether the list `trees` contains only one single code tree.
    */
-  def singleton(trees: List[CodeTree]): Boolean = ???
+  def singleton(trees: List[CodeTree]): Boolean = trees match {
+    case _ :: Nil => true
+    case _ => false
+  }
 
   /**
    * The parameter `trees` of this function is a list of code trees ordered
@@ -129,7 +133,10 @@ object Huffman {
    * If `trees` is a list of less than two elements, that list should be returned
    * unchanged.
    */
-  def combine(trees: List[CodeTree]): List[CodeTree] = ???
+  def combine(trees: List[CodeTree]): List[CodeTree] = trees match {
+    case _ :: Nil => trees
+  	case x :: y :: ys => makeCodeTree(x, y) :: ys
+  }
 
   /**
    * This function will be called in the following way:
@@ -148,7 +155,13 @@ object Huffman {
    *    the example invocation. Also define the return type of the `until` function.
    *  - try to find sensible parameter names for `xxx`, `yyy` and `zzz`.
    */
-  def until(xxx: ???, yyy: ???)(zzz: ???): ??? = ???
+  def until(condition: List[CodeTree] => Boolean,
+      action: List[CodeTree] => List[CodeTree])(trees: List[CodeTree]): CodeTree = {
+    def loop(list: List[CodeTree]): CodeTree =
+      if(singleton(list)) list.head
+      else loop(action(list))
+    loop(trees)
+  }
 
   /**
    * This function creates a code tree which is optimal to encode the text `chars`.
@@ -156,7 +169,8 @@ object Huffman {
    * The parameter `chars` is an arbitrary text. This function extracts the character
    * frequencies from that text and creates a code tree based on them.
    */
-  def createCodeTree(chars: List[Char]): CodeTree = ???
+  def createCodeTree(chars: List[Char]): CodeTree =
+    until(singleton, combine)(makeOrderedLeafList(times(chars)))
 
 
 

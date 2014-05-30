@@ -29,4 +29,12 @@ object ListsPlayground {
     (xs foldRight 0)( (_, r) => 1 + r )           //> lengthFun: [T](xs: List[T])Int
   
   lengthFun(n)                                    //> res7: Int = 3
+  
+  def isSingleton[T](list: List[T]) = list match {
+  	case _ :: Nil => true
+  	case _ => false
+  }                                               //> isSingleton: [T](list: List[T])Boolean
+  
+  isSingleton(List(1))                            //> res8: Boolean = true
+  isSingleton(List(1,2))                          //> res9: Boolean = false
 }
