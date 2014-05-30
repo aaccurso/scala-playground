@@ -79,19 +79,17 @@ object Huffman {
    */
   def times(chars: List[Char]): List[(Char, Int)] = {
     def loop(xs: List[Char], list_pair: List[(Char, Int)]): List[(Char, Int)] = {
-      def increment_pair(char_to_match: Char): List[(Char, Int)] = {
-        val some = list_pair.find((pair) => pair match {
-	  		case (aChar, _) => aChar == char_to_match
-        })
-        if(some.isDefined) {
-          val pair = some.head
-          val index = list_pair.indexOf(pair)
-          loop(xs.tail, (pair._1, pair._2 + 1) :: list_pair.take(index) ::: list_pair.drop(index + 1))
-        } // There is no tuple that contains char_to_match
-        else loop(xs.tail, (char_to_match, 1) :: list_pair)            
+      def increment_list_pair(list_pair: List[(Char, Int)]): List[(Char, Int)] = {
+        val char_to_match = xs.head
+        list_pair match {
+			case List() => (char_to_match, 1) :: list_pair
+			case (c, n) :: xs1 =>
+			  if(c == char_to_match) (c, n + 1) :: list_pair.take(list_pair.indexOf((c, n))) ::: xs1
+			  else (c, n) :: increment_list_pair(xs1)
+        }
       }
       if(xs.isEmpty) return list_pair
-      else increment_pair(xs.head)
+      else loop(xs.tail, increment_list_pair(list_pair))
     }
     loop(chars, List())
   }
@@ -103,7 +101,16 @@ object Huffman {
    * head of the list should have the smallest weight), where the weight
    * of a leaf is the frequency of the character.
    */
-  def makeOrderedLeafList(freqs: List[(Char, Int)]): List[Leaf] = ???
+  def makeOrderedLeafList(freqs: List[(Char, Int)]): List[Leaf] = {
+    def loop(list: List[(Char, Int)], acc: List[Leaf]): List[Leaf] = list match {
+	    case List() => acc
+	    case (aChar, aFreq) :: xs => {
+	      val (greater, lower) = acc.span(leaf => leaf.weight > aFreq)
+	      loop(xs, lower ::: Leaf(aChar, aFreq) :: greater)
+	    }
+	  }
+    loop(freqs, List())
+  }
 
   /**
    * Checks whether the list `trees` contains only one single code tree.

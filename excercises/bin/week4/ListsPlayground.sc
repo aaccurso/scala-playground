@@ -21,4 +21,12 @@ object ListsPlayground {
                                                   //> res5: List[(Char, Int)] = List((b,4), (a,2), (c,4))
 	n.find((pair) => match_pair(pair, 'z')).isDefined
                                                   //> res6: Boolean = false
+  
+  def mapFun[T, U](xs: List[T], f: T => U): List[U] =
+    (xs foldRight List[U]())( f(_) :: _ )         //> mapFun: [T, U](xs: List[T], f: T => U)List[U]
+	
+  def lengthFun[T](xs: List[T]): Int =
+    (xs foldRight 0)( (_, r) => 1 + r )           //> lengthFun: [T](xs: List[T])Int
+  
+  lengthFun(n)                                    //> res7: Int = 3
 }
