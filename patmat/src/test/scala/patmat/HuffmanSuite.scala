@@ -31,11 +31,16 @@ class HuffmanSuite extends FunSuite {
   }
   
   test("times ['a', 'b']") {
-    assert(times(List('a', 'a', 'b', 'b', 'a')) == List(('a', 3), ('b', 2)))
+    assert(times(List('a', 'a', 'b', 'b', 'a')) === List(('a', 3), ('b', 2)))
   }
 
   test("makeOrderedLeafList for some frequency table") {
     assert(makeOrderedLeafList(List(('t', 2), ('e', 1), ('x', 3))) === List(Leaf('e',1), Leaf('t',2), Leaf('x',3)))
+  }
+  
+  test("makeOrderedLeafList for some large frequency table") {
+    val chars = List('a', 'a', 'b', 'b', 'a', 'z', 'c', 'c', 'a', 'c')
+    assert(makeOrderedLeafList(times(chars)) === List(Leaf('z',1), Leaf('b',2), Leaf('c',3), Leaf('a',4)))
   }
 
   test("combine of some leaf list") {
@@ -46,6 +51,24 @@ class HuffmanSuite extends FunSuite {
   test("combine of an even leaf list") {
     val leaflist = List(Leaf('x', 4), Leaf('a', 6))
     assert(combine(leaflist) === List(Fork(Leaf('x',4),Leaf('a',6),List('x', 'a'),10)))
+  }
+  
+  test("combine of a Nil") {
+    assert(combine(Nil) === Nil)
+  }
+  
+  test("createCodeTree of t1 text should equal t1") {
+    new TestTrees {
+	    val text = "aabbb".toList
+	    assert(createCodeTree(text) === t1)
+    }
+  }
+  
+  test("createCodeTree of t2 text should equal t2") {
+    new TestTrees {
+	    val text = "ababdbddd".toList
+	    assert(createCodeTree(text) === t2)
+    }
   }
   
   test("decode a very short text") {

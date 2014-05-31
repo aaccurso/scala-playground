@@ -37,4 +37,7 @@ object ListsPlayground {
   
   isSingleton(List(1))                            //> res8: Boolean = true
   isSingleton(List(1,2))                          //> res9: Boolean = false
+  
+  val span_test = List(1) ::: 2 :: List(3)        //> span_test  : List[Int] = List(1, 2, 3)
+  span_test.span(x => x > 3)                      //> res10: (List[Int], List[Int]) = (List(),List(1, 2, 3))
 }

@@ -106,7 +106,7 @@ object Huffman {
 	    case List() => acc
 	    case (aChar, aFreq) :: xs => {
 	      // span partitions the list according to a predicate
-	      val (greater, lower) = acc.span(leaf => leaf.weight > aFreq)
+	      val (lower, greater) = acc.span(leaf => weight(leaf) < aFreq)
 	      loop(xs, lower ::: Leaf(aChar, aFreq) :: greater)
 	    }
 	  }
@@ -134,7 +134,7 @@ object Huffman {
    * unchanged.
    */
   def combine(trees: List[CodeTree]): List[CodeTree] = trees match {
-    case Nil => throw new Error("Nil.combine")
+    case Nil => trees
     case List() => trees
     case _ :: Nil => trees
   	case x :: y :: ys => makeCodeTree(x, y) :: ys
