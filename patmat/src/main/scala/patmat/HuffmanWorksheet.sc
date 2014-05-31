@@ -18,4 +18,6 @@ object HuffmanWorksheet {
   Huffman.createCodeTree(chars)                   //> res2: patmat.Huffman.CodeTree = Fork(Fork(Fork(Fork(Fork(Leaf(z,1),Leaf(b,2)
                                                   //| ,List(z, b),3),Leaf(a,3),List(z, b, a),6),Leaf(c,2),List(z, b, a, c),8),Leaf
                                                   //| (f,1),List(z, b, a, c, f),9),Leaf(o,1),List(z, b, a, c, f, o),10)
+  
+  Huffman.decodedSecret                           //> res3: List[Char] = List(h, u, f, f, m, a, n, e, s, t, c, o, o, l)
 }

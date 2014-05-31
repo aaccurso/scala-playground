@@ -88,7 +88,7 @@ object Huffman {
 			  else (c, n) :: increment_list_pair(xs1)
         }
       }
-      if(xs.isEmpty) return list_pair
+      if(xs.isEmpty) list_pair
       else loop(xs.tail, increment_list_pair(list_pair))
     }
     loop(chars, List())
@@ -134,6 +134,8 @@ object Huffman {
    * unchanged.
    */
   def combine(trees: List[CodeTree]): List[CodeTree] = trees match {
+    case Nil => throw new Error("Nil.combine")
+    case List() => trees
     case _ :: Nil => trees
   	case x :: y :: ys => makeCodeTree(x, y) :: ys
   }
@@ -182,7 +184,20 @@ object Huffman {
    * This function decodes the bit sequence `bits` using the code tree `tree` and returns
    * the resulting list of characters.
    */
-  def decode(tree: CodeTree, bits: List[Bit]): List[Char] = ???
+  def decode(tree: CodeTree, bits: List[Bit]): List[Char] = {
+    def loop(traversed_tree: CodeTree, traversed_bits: List[Bit], decoded: List[Char]): List[Char] = traversed_tree match {
+      case Leaf(aChar, _) => loop(tree, traversed_bits, decoded ::: List(aChar))
+      case Fork(left, right, _, _) => {
+        traversed_bits match {
+          case List() => decoded
+          case 0 :: xs => loop(left, xs, decoded)
+          case 1 :: xs => loop(right, xs, decoded)
+          case _ => throw new Error("Not A Bit")
+        }
+      }
+    }
+    loop(tree, bits, List())
+  }
 
   /**
    * A Huffman coding tree for the French language.
@@ -200,7 +215,7 @@ object Huffman {
   /**
    * Write a function that returns the decoded secret
    */
-  def decodedSecret: List[Char] = ???
+  def decodedSecret: List[Char] = decode(frenchCode, secret)
 
 
 
