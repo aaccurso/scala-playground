@@ -88,4 +88,26 @@ class HuffmanSuite extends FunSuite {
       assert(decode(t1, encode(t1)("ab".toList)) === "ab".toList)
     }
   }
+  
+  test("convert a CodeTree") {
+    new TestTrees {
+      assert(convert(t1) == List(('a', List(0)), ('b', List(1))))
+      assert(convert(t2) == List(('a', List(0, 0)), ('b', List(0, 1)), ('d', List(1))))
+    }
+  }
+  
+  test("codeBits") {
+    new TestTrees {
+      val codeBits_t2 = codeBits(convert(t2))_
+      assert(codeBits_t2('a') == List(0, 0))
+      assert(codeBits_t2('b') == List(0, 1))
+      assert(codeBits_t2('d') == List(1))
+    }
+  }
+  
+  test("quick encode and decode a very short text should be identity") {
+    new TestTrees {
+      assert(decode(t1, quickEncode(t1)("ab".toList)) === "ab".toList)
+    }
+  }
 }

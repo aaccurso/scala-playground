@@ -40,4 +40,5 @@ object ListsPlayground {
   
   val span_test = List(1) ::: 2 :: List(3)        //> span_test  : List[Int] = List(1, 2, 3)
   span_test.span(x => x > 3)                      //> res10: (List[Int], List[Int]) = (List(),List(1, 2, 3))
+  List(('a', List(0))) ::: List(('b', List(1)))   //> res11: List[(Char, List[Int])] = List((a,List(0)), (b,List(1)))
 }
