@@ -91,14 +91,17 @@ object Anagrams {
    */
   type Occurrence = (Char, Int)
   
+  def isInvalid(occurrence: Occurrence) = occurrence._2 <= 0
+  
   def combinations(occurrences: Occurrences): List[Occurrences] = occurrences match {
     case Nil => List(Nil)
   	case List() => List()
   	case o :: os =>
   	  (for {
-  	  c <- (0 to o._2).map((o._1,_)).toList
-  	  cs <- combinations(os)
-  	} yield c :: cs).map(_.filterNot(_._2 == 0))
+	  	  c <- (0 to o._2).map((o._1,_)).toList
+	  	  cs <- combinations(os)
+	  	} yield c :: cs)
+	  .map(_.filterNot(isInvalid(_)))
   }
 
   /** Subtracts occurrence list `y` from occurrence list `x`.
@@ -111,7 +114,12 @@ object Anagrams {
    *  Note: the resulting value is an occurrence - meaning it is sorted
    *  and has no zero-entries.
    */
-  def subtract(x: Occurrences, y: Occurrences): Occurrences = ???
+  def subtract(x: Occurrences, y: Occurrences): Occurrences =
+    (x ::: y).groupBy(_._1) // Groups by char
+    	.mapValues(l => l.map(_._2) // Maps grouped list of occurrences to values
+    	.foldRight(0)(_-_)) // Subtract those values
+    	.filterNot(isInvalid(_)) // Filter negative or zero
+    	.toList.sorted
 
   /** Returns a list of all anagram sentences of the given sentence.
    *  
