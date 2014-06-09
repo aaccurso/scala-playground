@@ -91,17 +91,17 @@ object Anagrams {
    */
   type Occurrence = (Char, Int)
   
-  def isInvalid(occurrence: Occurrence) = occurrence._2 <= 0
+  def isValid(occurrence: Occurrence) = occurrence._2 > 0
   
   def combinations(occurrences: Occurrences): List[Occurrences] = occurrences match {
     case Nil => List(Nil)
-  	case List() => List()
+  	case List() => List(Nil)
   	case o :: os =>
   	  (for {
 	  	  c <- (0 to o._2).map((o._1,_)).toList
 	  	  cs <- combinations(os)
 	  	} yield c :: cs)
-	  .map(_.filterNot(isInvalid(_)))
+	  .map(_.filter(isValid(_)))
   }
 
   /** Subtracts occurrence list `y` from occurrence list `x`.
@@ -118,7 +118,7 @@ object Anagrams {
     (x ::: y).groupBy(_._1) // Groups by char
     	.mapValues(l => l.map(_._2) // Maps grouped list of occurrences to values
     	.foldRight(0)(_-_)) // Subtract those values
-    	.filterNot(isInvalid(_)) // Filter negative or zero
+    	.filter(isValid(_)) // Filter negative or zero
     	.toList.sorted
 
   /** Returns a list of all anagram sentences of the given sentence.
@@ -161,6 +161,18 @@ object Anagrams {
    *
    *  Note: There is only one anagram of an empty sentence.
    */
-  def sentenceAnagrams(sentence: Sentence): List[Sentence] = ???
+  
+  def sentenceAnagrams(sentence: Sentence): List[Sentence] = {
+	  occurrencesAnagrams(sentenceOccurrences(sentence))
+  }
+  def occurrencesAnagrams(occ: Occurrences): List[Sentence] =
+    if(occ.isEmpty) List(Nil)
+    else (for {
+		    comb <- combinations(occ)
+			if dictionaryByOccurrences contains comb
+		} yield for {
+		   word <- dictionaryByOccurrences(comb)
+		   sentences <- occurrencesAnagrams(subtract(occ, comb))
+		} yield word :: sentences).flatten
 
 }
