@@ -165,6 +165,7 @@ object Anagrams {
   def sentenceAnagrams(sentence: Sentence): List[Sentence] = {
 	  occurrencesAnagrams(sentenceOccurrences(sentence))
   }
+  
   def occurrencesAnagrams(occ: Occurrences): List[Sentence] =
     if(occ.isEmpty) List(Nil)
     else (for {
