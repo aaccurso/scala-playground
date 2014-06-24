@@ -37,8 +37,6 @@ trait GameDef {
 
     /** The position obtained by changing the `y` coordinate by `d` */
     def dy(d: Int) = copy(y = y + d)
-    
-    def equals(pos: Pos) = this.x == pos.x && this.y == pos.y
   }
 
   /**
